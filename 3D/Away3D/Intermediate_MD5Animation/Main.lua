@@ -434,7 +434,7 @@ function initObjects()
                     end, false, 0, false)
                 end
             end, false, 0, false)
-    Away3D.Library.Asset3DLibrary.loadData(HellKnight_Mesh, null, null, Away3D.Loaders.Parsers.MD5MeshParser.new(nil, 0))
+    Away3D.Library.Asset3DLibrary.loadData(HellKnight_Mesh, nil, nil, Away3D.Loaders.Parsers.MD5MeshParser.new(nil, 0))
 
     --create a snowy ground plane
     ground = Mesh.new(Primitives.PlaneGeometry.new(50000, 50000, 1, 1, true, false), groundMaterial)

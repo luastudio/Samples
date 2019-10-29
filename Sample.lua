@@ -23,7 +23,7 @@ stage.frameRate = 60
 bd = BitmapData.new(100,100,true,0xcccccccc,nil)
 bd.draw(sp, nil, nil, nil, nil, false)
 
-bm = Bitmap.new(bd, null, false)
+bm = Bitmap.new(bd, nil, false)
 stage.addChild(bm)
 bm.x = 100
 
