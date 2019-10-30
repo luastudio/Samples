@@ -21,7 +21,7 @@ This code is distributed under the MIT License
 Copyright (c) The Away Foundation http://www.theawayfoundation.org
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
+of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -30,7 +30,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -88,6 +88,7 @@ Thread = Lib.Sys.VM.Thread
 Cast = Lib.Away3D.Utils.Cast
 require("/Common/Utils.lua")
 Assets.Web.log = true
+--Assets.Web.cache = true
 --get ref to main
 local main = Thread.readMessage(true)
 main.sendMessage({
@@ -163,18 +164,19 @@ function initLights()
 
     whiteLight = DirectionalLight.new(-50, -20, 10)
     whiteLight.color = 0xffffee
-    --whiteLight.castsShadows = true -- shadows currently not working
+    whiteLight.castsShadows = true
     whiteLight.ambient = 1
     whiteLight.ambientColor = 0x303040
-    --whiteLight.shadowMapper = Away3D.Lights.ShadowMaps.NearDirectionalShadowMapper.new(.2)
+    whiteLight.shadowMapper = Away3D.Lights.ShadowMaps.NearDirectionalShadowMapper.new(0.2)
     scene.addChild(whiteLight)
 
     lightPicker = Materials.LightPickers.StaticLightPicker.new({redLight, blueLight, whiteLight})
 
     --create a global shadow method
-    --shadowMapMethod = Materials.Methods.NearShadowMapMethod.new(
-    --        Materials.Methods.FilteredShadowMapMethod.new(whiteLight), 0.1)
-    --shadowMapMethod.epsilon = .1
+    shadowMapMethod = Materials.Methods.NearShadowMapMethod.new(
+            Materials.Methods.FilteredShadowMapMethod.new(whiteLight), 0.1)
+    shadowMapMethod.epsilon = .1
+    --shadowMapMethod.alpha = .8
 
     --create a global fog method
     fogMethod = Materials.Methods.FogMethod.new(0, camera.lens.far*0.5, 0x000000)
@@ -199,7 +201,7 @@ function initMaterials()
     groundMaterial.lightPicker = lightPicker
     groundMaterial.normalMap = assets.rockbase_normals
     groundMaterial.specularMap = assets.rockbase_specular
-    --groundMaterial.shadowMethod = shadowMapMethod -- shadows currently not working
+    groundMaterial.shadowMethod = nil--shadowMapMethod
     groundMaterial.addMethod(fogMethod)
 
     --body material
@@ -210,7 +212,7 @@ function initMaterials()
     bodyMaterial.normalMap = assets.hellknight_normals
     bodyMaterial.addMethod(fogMethod)
     bodyMaterial.lightPicker = lightPicker
-    --bodyMaterial.shadowMethod = shadowMapMethod -- shadows currently not working
+    --bodyMaterial.shadowMethod = shadowMapMethod
 end
 
 function stop()
@@ -357,7 +359,7 @@ function initObjects()
                     --grab mesh object and assign our material object
                     mesh = e.asset
                     mesh.material = bodyMaterial
-                    --mesh.castsShadows = true -- shadows currently not working
+                    mesh.castsShadows = true
                     scene.addChild(mesh)
 
                     --add our lookat object to the mesh
@@ -439,7 +441,7 @@ function initObjects()
     --create a snowy ground plane
     ground = Mesh.new(Primitives.PlaneGeometry.new(50000, 50000, 1, 1, true, false), groundMaterial)
     ground.geometry.scaleUV(200, 200)
-    -- ground.castsShadows = false -- shadows currently not working
+    ground.castsShadows = false
     scene.addChild(ground)
 
     --create a skybox
@@ -476,11 +478,25 @@ function initListeners()
         view.render()
     end)
 
+
+    require("/Common/Switch.lua")
+    switch = Switch.new("shadows", 0xFFFF00, 100, 50, false, function(status)
+      if(status)then
+        groundMaterial.shadowMethod = shadowMapMethod
+      else
+        groundMaterial.shadowMethod = nil
+      end
+    end)
+    local switchSprite = switch.getSprite()
+    stage.addChild(switchSprite)
+
     local onResize = function(e)
         view.width = stage.stageWidth
         view.height = stage.stageHeight
         spriteNavigation.x = 20
         spriteNavigation.y = stage.stageHeight - spriteNavigation.height - 20
+        switchSprite.x = spriteNavigation.x
+        switchSprite.y = spriteNavigation.y - switchSprite.height - 20
     end
 
     stage.addEventListener(Events.Event.RESIZE, onResize, false, 0, false)

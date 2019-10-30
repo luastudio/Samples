@@ -77,6 +77,7 @@ Thread = Lib.Sys.VM.Thread
 Cast = Lib.Away3D.Utils.Cast
 require("/Common/Utils.lua")
 Assets.Web.log = true
+--Assets.Web.cache = true
 --get ref to main
 local main = Thread.readMessage(true)
 main.sendMessage({

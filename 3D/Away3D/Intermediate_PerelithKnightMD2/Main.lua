@@ -6,7 +6,7 @@ Vertex animation example in Away3d using the MD2 format
 
 Demonstrates:
 
-How to use the AssetLibrary object to load an embedded internal md2 model.
+How to use the AssetLibrary object to load from web md2 model.
 How to clone an asset from the AssetLibrary and apply different mateirals.
 How to load animations into an animation set and apply to individual meshes.
 
@@ -143,7 +143,7 @@ function processModel()
                 local clone = _mesh.clone()
                 clone.x = (i-(numWide-1)/2)*5000/numWide
                 clone.z = (j-(numDeep-1)/2)*5000/numDeep
-                --clone.castsShadows = true; not supported
+                clone.castsShadows = true
                 clone.material = _pKnightMaterials[math.floor(math.random()*#_pKnightMaterials)]
                 _view.scene.addChild(clone)
 
@@ -159,14 +159,14 @@ function processModel()
     end , false, 0, false)
 
     --create a global shadow map method
-    --_shadowMapMethod = FilteredShadowMapMethod.new(_light) not supported
+    _shadowMapMethod = Materials.Methods.FilteredShadowMapMethod.new(_light)
 
     --setup floor material
     _floorMaterial = Materials.TextureMaterial.new(assets.floor_diffuse, true, false, true, nil)
     _floorMaterial.lightPicker = _lightPicker
     _floorMaterial.specular = 0
     _floorMaterial.ambient = 1
-    --_floorMaterial.shadowMethod = _shadowMapMethod
+    _floorMaterial.shadowMethod = nil--_shadowMapMethod
     _floorMaterial['repeat'] = true
 
     _pKnightMaterials = {}
@@ -179,7 +179,7 @@ function processModel()
         knightMaterial.gloss = 30
         knightMaterial.specular = 1
         knightMaterial.ambient = 1
-        --knightMaterial.shadowMethod = _shadowMapMethod
+        knightMaterial.shadowMethod = _shadowMapMethod
         _pKnightMaterials[i] = knightMaterial
     end
 
@@ -394,11 +394,24 @@ function processModel()
         end, false, 0, false)
     end
 
+    require("/Common/Switch.lua")
+    switch = Switch.new("shadows", 0xFFFF00, 100, 50, false, function(status)
+      if(status)then
+        _floorMaterial.shadowMethod = _shadowMapMethod
+      else
+        _floorMaterial.shadowMethod = nil
+      end
+    end)
+    local switchSprite = switch.getSprite()
+    stage.addChild(switchSprite)
+
     local onResize = function(e)
         _view.width = stage.stageWidth
         _view.height = stage.stageHeight
         spriteNavigation.x = 20
         spriteNavigation.y = stage.stageHeight - spriteNavigation.height - 20
+        switchSprite.x = spriteNavigation.x
+        switchSprite.y = spriteNavigation.y - switchSprite.height - 20
     end
     stage.addEventListener(Events.Event.RESIZE, onResize, false, 0, false)
 

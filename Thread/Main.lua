@@ -19,12 +19,12 @@ end
 main.sendMessage("thread2 done")
 ]])
 
+--give thread2 a ref to main thread
+t2.sendMessage(Thread.current())
+
 --give thread1 ref to main thread and thread2
 t1.sendMessage(Thread.current())
 t1.sendMessage(t2)
-
---give thread2 a ref to main thread
-t2.sendMessage(Thread.current())
 
 --wait for them to finish
 Lib.Media.Display.stage.addEventListener(Lib.Media.Events.Event.ENTER_FRAME,

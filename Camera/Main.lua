@@ -44,7 +44,7 @@ end
 
 print("Camera devices:")
 names = Camera.names
-if names ~= nil then
+if names ~= nil and #names > 0 then
   for i = 1, #names do
     camera = Camera.getCamera(names[i]) 
     print("camera: "..camera.name.." ["..camera.width.."x"..camera.height.."] position: "..camera.position)

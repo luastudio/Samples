@@ -5,6 +5,10 @@ Text = Lib.Media.Text
 Capabilities = Lib.Media.Capabilities
 stage = Display.stage
 
+if type(jit) == 'table' then
+  bit32 = bit
+end
+
 stage.scaleX = Capabilities.screenDPI > 120 and Capabilities.screenDPI / 120 or 1
 stage.scaleY = stage.scaleX
 
@@ -23,10 +27,13 @@ for side = 0, 1, 1 do
 	text.textColor = col
 	text.width = 100
 	text.wordWrap = true
-	text.text = "Hello !\nFrom this multi-line, wordwrapped, centred text box!"
+	text.text = "Hello !\nFrom this multi-line, wordwrapped"..(side==1 and ", outlined" or "")..", centred text box!"
 
 	local fmt = Text.TextFormat.new('_sans', 12, 0x969696, nil, nil, nil)
 	fmt.align = Text.TextFormatAlign.CENTER
+    fmt.outline = side==1 and 0.3 or 0
+    --fmt.outlineFlags = bit32.bor(Text.TextFormat.OUTLINE_END_SQUARE, Text.TextFormat.OUTLINE_EDGE_MITER) --OUTLINE_END_SQUARE, OUTLINE_EDGE_BEVEL, OUTLINE_EDGE_MITER
+    --fmt.outlineMiterLimit = 0.5
 	text.setTextFormat(fmt, 0, text.textLength) 
 	
     fmt = Text.TextFormat.new('_sans', 12, 0x660000, nil, nil, nil)
