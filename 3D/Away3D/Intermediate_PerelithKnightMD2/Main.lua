@@ -159,14 +159,14 @@ function processModel()
     end , false, 0, false)
 
     --create a global shadow map method
-    _shadowMapMethod = Materials.Methods.FilteredShadowMapMethod.new(_light)
+    --_shadowMapMethod = Materials.Methods.FilteredShadowMapMethod.new(_light)
 
     --setup floor material
     _floorMaterial = Materials.TextureMaterial.new(assets.floor_diffuse, true, false, true, nil)
     _floorMaterial.lightPicker = _lightPicker
     _floorMaterial.specular = 0
     _floorMaterial.ambient = 1
-    _floorMaterial.shadowMethod = nil--_shadowMapMethod
+    --_floorMaterial.shadowMethod = _shadowMapMethod
     _floorMaterial['repeat'] = true
 
     _pKnightMaterials = {}
@@ -179,7 +179,7 @@ function processModel()
         knightMaterial.gloss = 30
         knightMaterial.specular = 1
         knightMaterial.ambient = 1
-        knightMaterial.shadowMethod = _shadowMapMethod
+        --knightMaterial.shadowMethod = _shadowMapMethod
         _pKnightMaterials[i] = knightMaterial
     end
 
@@ -397,9 +397,14 @@ function processModel()
     require("/Common/Switch.lua")
     switch = Switch.new("shadows", 0xFFFF00, 100, 50, false, function(status)
       if(status)then
+        _shadowMapMethod = Materials.Methods.FilteredShadowMapMethod.new(_light)
         _floorMaterial.shadowMethod = _shadowMapMethod
       else
+        _light.castsShadows = false
         _floorMaterial.shadowMethod = nil
+        if(_shadowMapMethod ~= nil) then 
+          _shadowMapMethod.reset() _shadowMapMethod.dispose() _shadowMapMethod = nil 
+        end
       end
     end)
     local switchSprite = switch.getSprite()
