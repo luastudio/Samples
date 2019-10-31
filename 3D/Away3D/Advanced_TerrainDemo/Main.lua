@@ -333,7 +333,7 @@ function initListeners()
         spriteNavigation.y = stage.stageHeight - spriteNavigation.height - 20
     end
 
-    stage.addEventListener(Events.RESIZE, onResize, false, 0, false)
+    stage.addEventListener(Events.Event.RESIZE, onResize, false, 0, false)
     onResize()
 end
 
