@@ -5,6 +5,7 @@ Mesh = Away3D.Entities.Mesh
 Materials = Away3D.Materials
 Primitives = Away3D.Primitives
 Display = Lib.Media.Display
+Events = Lib.Media.Events
 stage = Display.stage
 
 _camera = Stereo.StereoCamera3D.new(nil)
@@ -27,3 +28,11 @@ _view.setRenderCallback(function(rect)
     _cube.rotationY = _cube.rotationY + 2
     _view.render()
 end)
+
+onResize = function(e)
+        _view.width = stage.stageWidth
+        _view.height = stage.stageHeight
+end
+
+stage.addEventListener(Events.Event.RESIZE, onResize, false, 0, false)
+onResize()
