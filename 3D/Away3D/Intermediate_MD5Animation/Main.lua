@@ -164,19 +164,19 @@ function initLights()
 
     whiteLight = DirectionalLight.new(-50, -20, 10)
     whiteLight.color = 0xffffee
-    whiteLight.castsShadows = true
+    --whiteLight.castsShadows = true
     whiteLight.ambient = 1
     whiteLight.ambientColor = 0x303040
-    whiteLight.shadowMapper = Away3D.Lights.ShadowMaps.NearDirectionalShadowMapper.new(0.2)
+    --whiteLight.shadowMapper = Away3D.Lights.ShadowMaps.NearDirectionalShadowMapper.new(0.2)
     scene.addChild(whiteLight)
 
     lightPicker = Materials.LightPickers.StaticLightPicker.new({redLight, blueLight, whiteLight})
 
     --create a global shadow method
-    shadowMapMethod = Materials.Methods.NearShadowMapMethod.new(
-            Materials.Methods.FilteredShadowMapMethod.new(whiteLight), 0.1)
-    shadowMapMethod.epsilon = .1
-    --shadowMapMethod.alpha = .8
+    --shadowMapMethod = Materials.Methods.NearShadowMapMethod.new(
+    --        Materials.Methods.FilteredShadowMapMethod.new(whiteLight), 0.1)
+    --shadowMapMethod.epsilon = .1
+    ----shadowMapMethod.alpha = .8
 
     --create a global fog method
     fogMethod = Materials.Methods.FogMethod.new(0, camera.lens.far*0.5, 0x000000)
@@ -201,7 +201,7 @@ function initMaterials()
     groundMaterial.lightPicker = lightPicker
     groundMaterial.normalMap = assets.rockbase_normals
     groundMaterial.specularMap = assets.rockbase_specular
-    groundMaterial.shadowMethod = nil--shadowMapMethod
+    --groundMaterial.shadowMethod = shadowMapMethod
     groundMaterial.addMethod(fogMethod)
 
     --body material
@@ -482,9 +482,19 @@ function initListeners()
     require("/Common/Switch.lua")
     switch = Switch.new("shadows", 0xFFFF00, 100, 50, false, function(status)
       if(status)then
+        whiteLight.shadowMapper = Away3D.Lights.ShadowMaps.NearDirectionalShadowMapper.new(0.2)
+        shadowMapMethod = Materials.Methods.NearShadowMapMethod.new(
+            Materials.Methods.FilteredShadowMapMethod.new(whiteLight), 0.1)
+        shadowMapMethod.epsilon = .1
+        --shadowMapMethod.alpha = .8
+
         groundMaterial.shadowMethod = shadowMapMethod
       else
+        whiteLight.castsShadows = false
         groundMaterial.shadowMethod = nil
+        if(shadowMapMethod ~= nil) then 
+             shadowMapMethod.reset() shadowMapMethod.dispose() shadowMapMethod = nil 
+        end
       end
     end)
     local switchSprite = switch.getSprite()
