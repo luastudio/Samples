@@ -11,10 +11,21 @@ connection.request ([[CREATE TABLE IF NOT EXISTS Test (
 connection.request ("INSERT INTO Test (field1, field2) VALUES (?, ?)", {1, "test1"})
 connection.request ("INSERT INTO Test (field1, field2) VALUES (?, ?)", {2, "test2"})
 
-resultSet = connection.request ("SELECT field1, field2 FROM Test", nil);
+resultSet = connection.request ("SELECT field1, field2 FROM Test", nil)
 while resultSet.hasNext() do
 	row = resultSet.next()
 	print(row.field1.." "..row.field2)
+end
+
+
+--direct blob update/select (use for small size data)
+
+imageBytes = Lib.Project.getBytes("/Bunnymark/assets/wabbit_alpha.png")
+connection.request ("UPDATE Test SET field3 = ? WHERE field1=?", {imageBytes.getData(), 1})
+resultSet = connection.request ("SELECT field3 FROM Test WHERE field1=?", {1})
+while resultSet.hasNext() do
+	row = resultSet.next()
+    imageBlobBytes2 = Lib.Sys.IO.Bytes.ofData(row.field3)
 end
 
 --BLOB field should be not NULL or it will crash with error "cannot open value of type null"
@@ -62,4 +73,10 @@ data = BitmapData.loadFromBytes(Lib.Media.Utils.ByteArray.fromBytes(imageBlobByt
 bmp = Bitmap.new(data, Display.PixelSnapping.AUTO, false)
 bmp.x = 50
 bmp.y = 50
+stage.addChild(bmp)
+
+data = BitmapData.loadFromBytes(Lib.Media.Utils.ByteArray.fromBytes(imageBlobBytes2), nil)
+bmp = Bitmap.new(data, Display.PixelSnapping.AUTO, false)
+bmp.x = 10
+bmp.y = 10
 stage.addChild(bmp)

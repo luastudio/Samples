@@ -1,4 +1,4 @@
-﻿--Main.lua (WARNING: require internet connection)
+--Main.lua (WARNING: require internet connection)
 
 --[[Based on:
 
@@ -176,7 +176,7 @@ function initLights()
     --shadowMapMethod = Materials.Methods.NearShadowMapMethod.new(
     --        Materials.Methods.FilteredShadowMapMethod.new(whiteLight), 0.1)
     --shadowMapMethod.epsilon = .1
-    ----shadowMapMethod.alpha = .8
+    --shadowMapMethod.alpha = .8
 
     --create a global fog method
     fogMethod = Materials.Methods.FogMethod.new(0, camera.lens.far*0.5, 0x000000)
@@ -368,7 +368,7 @@ function initObjects()
                     --add key listeners
                     stage.addEventListener(Events.KeyboardEvent.KEY_DOWN, function(ke)
                         if ke.keyCode == Keyboard.SHIFT then
-                            isRunning = true;
+                            isRunning = true
                             if isMoving then
                                 updateMovement(movementDirection)
                             end
@@ -484,14 +484,16 @@ function initListeners()
       if(status)then
         whiteLight.shadowMapper = Away3D.Lights.ShadowMaps.NearDirectionalShadowMapper.new(0.2)
         shadowMapMethod = Materials.Methods.NearShadowMapMethod.new(
-            Materials.Methods.FilteredShadowMapMethod.new(whiteLight), 0.1)
-        shadowMapMethod.epsilon = .1
-        --shadowMapMethod.alpha = .8
+            Materials.Methods.SoftShadowMapMethod.new(whiteLight, 10, 5), 0.1)
+        shadowMapMethod.epsilon = 0.1
+        shadowMapMethod.alpha = .9
 
         groundMaterial.shadowMethod = shadowMapMethod
+        --bodyMaterial.shadowMethod = shadowMapMethod
       else
         whiteLight.castsShadows = false
         groundMaterial.shadowMethod = nil
+        --bodyMaterial.shadowMethod = nil
         if(shadowMapMethod ~= nil) then 
              shadowMapMethod.reset() shadowMapMethod.dispose() shadowMapMethod = nil 
         end

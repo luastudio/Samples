@@ -239,7 +239,7 @@ function initObjects()
 	pickingNormalTracer = SegmentSet.new()
 	pickingNormalTracer.mouseEnabled = false
 	pickingNormalTracer.mouseChildren = false
-	local lineSegment1 = Primitives.LineSegment.new( Geom.Vector3D.new(0,0,0,0), Geom.Vector3D.new(0,0,0,0), 0xFFFFFF, 0xFFFFFF, 3 )
+	local lineSegment1 = Primitives.LineSegment.new( Geom.Vector3D.new(0,0,0,0), Geom.Vector3D.new(0,0,0,0), 0xFFFF00, 0xFFFF00, 3 )
 	pickingNormalTracer.addSegment( lineSegment1 )
 	pickingNormalTracer.visible = false
 	view.scene.addChild( pickingNormalTracer )
@@ -247,7 +247,7 @@ function initObjects()
 	sceneNormalTracer = SegmentSet.new()
 	sceneNormalTracer.mouseEnabled = false
 	sceneNormalTracer.mouseChildren = false
-	local lineSegment2 = Primitives.LineSegment.new( Geom.Vector3D.new(0,0,0,0), Geom.Vector3D.new(0,0,0,0), 0xFFFFFF, 0xFFFFFF, 3 )
+	local lineSegment2 = Primitives.LineSegment.new( Geom.Vector3D.new(0,0,0,0), Geom.Vector3D.new(0,0,0,0), 0x00FF00, 0x00FF00, 3 )
 	sceneNormalTracer.addSegment( lineSegment2 )
 	sceneNormalTracer.visible = false
 	view.scene.addChild( sceneNormalTracer )
@@ -327,7 +327,7 @@ function initListeners()
 		-- Move light with camera.
 		pointLight.position = camera.position
 
-		local collidingObject = raycastPicker.getSceneCollision(camera.position, view.camera.forwardVector, view.scene) --PickingCollisionVO
+		local collidingObject = sceneCollision and raycastPicker.getSceneCollision(camera.position, view.camera.forwardVector, view.scene) or nil --PickingCollisionVO
 		--local mesh
 		
 		if previoiusCollidingObject ~= nil and previoiusCollidingObject ~= collidingObject then --equivalent to mouse out
@@ -371,9 +371,22 @@ function initListeners()
 		move = false
 	end, false, 0, false)
 
+    require("/Common/Switch.lua")
+    switch = Switch.new("Scene Collision", 0xFFFF00, 100, 50, false, function(status)
+        if(status)then
+	        sceneCollision = true
+        else
+  	      sceneCollision = false
+        end
+    end)
+    local switchSprite = switch.getSprite()
+    stage.addChild(switchSprite)
+
 	local onResize = function(e)
 		view.width = stage.stageWidth
 		view.height = stage.stageHeight
+        switchSprite.x = 20
+        switchSprite.y = view.height - switchSprite.height - 20
 	end
 
 	stage.addEventListener(Events.Event.RESIZE, onResize, false, 0, false)

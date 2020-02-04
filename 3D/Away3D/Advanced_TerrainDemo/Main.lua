@@ -326,7 +326,7 @@ function initListeners()
         end
     end, false, 0, false)
 
-    local onResize = function(e)
+    local onResize = function(e) 
         view.width = stage.stageWidth
         view.height = stage.stageHeight
         spriteNavigation.x = 20

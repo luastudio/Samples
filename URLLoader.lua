@@ -75,9 +75,9 @@ stage.addChild(image_loader)
 
 post = Net.URLRequest.new("https://tryphp.w3schools.com/demo/welcome.php")
 vars = Net.URLVariables.new(nil)
-vars.name = "Milla"
-vars.email = "Jovovich@hotmail.com"
-vars.submit = "1"
+vars.set("name", "Milla")
+vars.set("email", "Jovovich@hotmail.com")
+vars.set("submit", "1")
 post.method = Net.URLRequestMethod.POST
 post.data = vars
 Lib.Sys.trace(post.data)
