@@ -131,8 +131,8 @@ function enableMeshMouseListeners( mesh )
 			if mesh ~= head then
 				mesh.material = whiteMaterial
 			end
-			pickingPositionTracer.visible = true
-			pickingNormalTracer.visible = true
+			--pickingPositionTracer.visible = true
+			--pickingNormalTracer.visible = true
 			onMeshMouseMove(event)
 		end, false, 0, false )
 	mesh.addEventListener( Away3D.Events.MouseEvent3D.MOUSE_OUT,
@@ -275,9 +275,9 @@ function initObjects()
 				-- model.pickingCollider = Away3D.Core.Pick.PickingColliderType.FIRST_ENCOUNTERED -- is faster, but causes weirdness around the eyes
 
 				-- Apply mouse interactivity.
-				head.mouseEnabled = true
-				head.mouseChildren = true
-				head.shaderPickingDetails = true
+				head.mouseEnabled = sceneCollision
+				head.mouseChildren = sceneCollision
+				head.shaderPickingDetails = sceneCollision
 				enableMeshMouseListeners( head )
 
 				view.scene.addChild( head )
@@ -372,12 +372,15 @@ function initListeners()
 	end, false, 0, false)
 
     require("/Common/Switch.lua")
-    switch = Switch.new("Scene Collision", 0xFFFF00, 100, 50, false, function(status)
+    switch = Switch.new("track head", 0xFFFF00, 100, 50, false, function(status)
         if(status)then
-	        sceneCollision = true
+	        sceneCollision = true --slow on weak CPU
         else
   	      sceneCollision = false
         end
+		head.mouseEnabled = sceneCollision
+		head.mouseChildren = sceneCollision
+		head.shaderPickingDetails = sceneCollision
     end)
     local switchSprite = switch.getSprite()
     stage.addChild(switchSprite)

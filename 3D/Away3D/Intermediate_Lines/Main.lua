@@ -67,6 +67,7 @@ if type(jit) == 'table' then
     bit32 = bit
 end
 
+sysName = Lib.Media.System.systemName()
 desktop = true
 if sysName == "android" or sysName == "ios" then
 	desktop = false
@@ -241,8 +242,8 @@ function initScene()
         -- Define the grid size and the grid steps
         _wid = 6000
         _hgt = 8000
-        _stepsX = desktop and 30 or 15 --64 (slow)
-        _stepsY = desktop and 30 or 15 --64 (slow)
+        _stepsX = desktop and 25 or 10 --Try to increase for faster CPU
+        _stepsY = desktop and 25 or 10 --Try to increase for faster CPU
         _rot = math.floor(720/_stepsY)
 
         _heightScale = 10
