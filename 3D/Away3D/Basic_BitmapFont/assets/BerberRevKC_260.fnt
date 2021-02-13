@@ -3,9 +3,9 @@
   <info face="BerberRev" size="260" bold="0" italic="0" charset="" unicode="1" stretchH="100" smooth="1" aa="1" padding="2,2,2,2" spacing="5,5" outline="0"/>
   <common lineHeight="260" base="195" scaleW="1024" scaleH="512" pages="1" packed="0" alphaChnl="1" redChnl="0" greenChnl="0" blueChnl="0"/>
   <pages>
-    <page id="0" file="BerberRevKC_260_0.png" />
+    <page id="0" file="BerberRevKC_260_0.png" /> 
   </pages>
-  <chars count="57">
+<chars count="57">
     <char id="32" x="204" y="147" width="4" height="5" xoffset="-2" yoffset="257" xadvance="37" page="0" chnl="15" />
     <char id="33" x="429" y="364" width="28" height="109" xoffset="9" yoffset="88" xadvance="46" page="0" chnl="15" />
     <char id="34" x="462" y="364" width="60" height="43" xoffset="9" yoffset="85" xadvance="78" page="0" chnl="15" />

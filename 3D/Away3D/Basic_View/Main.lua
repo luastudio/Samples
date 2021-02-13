@@ -68,7 +68,7 @@ _view.scene.addChild(_plane)
 --setup the render loop
 _view.setRenderCallback(function(e)
 	_plane.rotationY = _plane.rotationY + 1
-		
+
 	_view.render()
 end)
 		

@@ -1,4 +1,4 @@
-﻿-- Socket.lua (WARNING: require internet connection)
+-- Socket.lua (WARNING: require internet connection)
 
 socket = Lib.Sys.SSL.Socket.new()
 print("Connecting to talk.google.com")

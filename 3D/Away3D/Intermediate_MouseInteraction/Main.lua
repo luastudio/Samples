@@ -44,6 +44,10 @@ tiltIncrement = 0
 panIncrement = 0
 distanceIncrement = 0
 
+--For mobile devices AGAL shader fragment precision set to medium by default.
+--High value can slow down rendering speed on some devicess or may not support it at all. 
+--This sample require high fragment precision for some devices like Nvidia Shield TV. Option will be deprecated when most devices can work with high precision properly and we can change default value to high. Try set this property to false if samle doesnt work on your device.
+Away3D.Config.OpenGL_ES.FRAGMENT_PRECISION_HIGH = true
 
 function initEngine()
 	view = View3D.new()

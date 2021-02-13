@@ -8,26 +8,59 @@ Geom = Lib.Media.Geom
 stage = Display.stage
 Camera = Lib.Media.Camera
 
+rot = 0 -- 0,90,270,180
+osn = Lib.Media.System.systemName()
 bitmap = nil
 
 function setBmpSize()
+  if osn == "android" or osn == "ios" then
+  	o = stage.getOrientation()
+	  if o == 1 then
+		rot = 90
+      elseif o == 3 then
+		rot = 0 
+      elseif o == 4 then
+		rot = 180
+      else
+        rot = 270 
+      end
+  end
+
   if bitmap ~= nil then
     local sw = stage.stageWidth
     local sh = stage.stageHeight
     local w = bitmap.bitmapData.width
     local h = bitmap.bitmapData.height
+    if rot==90 or rot==270 then
+	    w = bitmap.bitmapData.height
+        h = bitmap.bitmapData.width
+    end
+    local bmpW = sw
+    local bmpH = sh
     if w*sh > h*sw then
-      bitmap.width = sw
-      sh = h*sw/w
-      bitmap.height = sh
-      bitmap.x = 0
-      bitmap.y = (stage.stageHeight-sh)*0.5
+	    bmpH = h*sw/w
     else
-      bitmap.height = sh
-      sw = w*sh/h
-      bitmap.width = sw
-      bitmap.y = 0
-      bitmap.x = (stage.stageWidth-sw)*0.5
+        bmpW = w*sh/h
+    end
+
+    print('Stage : '..sw..' '..sh)
+    print('Camera: '..bmpW..' '..bmpH)
+    bitmap.rotation = rot
+    bitmap.width = bmpW
+    bitmap.height = bmpH
+
+	if rot == 0 then
+		bitmap.x = (sw-bmpW)*0.5
+		bitmap.y = (sh-bmpH)*0.5
+	elseif rot == 90 then
+        bitmap.x = sw - (sw-bmpW)*0.5
+        bitmap.y = (sh-bmpH)*0.5
+	elseif rot == 270 then
+        bitmap.x = (sw-bmpW)*0.5
+		bitmap.y = sh - (sh-bmpH)*0.5
+	elseif rot == 180 then
+        bitmap.x = sw - (sw-bmpW)*0.5
+        bitmap.y = sh - (sh-bmpH)*0.5
     end
   end
 end

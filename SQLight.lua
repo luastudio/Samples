@@ -2,6 +2,12 @@
 
 connection = Lib.SQLight.Connection.new(":memory:")
 
+resultSet = connection.request ([[SELECT sqlite_version() as version]], nil)
+while resultSet.hasNext() do
+	row = resultSet.next()
+	print('SQLite version: '..row.version)
+end
+
 connection.request ([[CREATE TABLE IF NOT EXISTS Test (
     field1 INTEGER PRIMARY KEY NOT NULL,
     field2 TEXT,
