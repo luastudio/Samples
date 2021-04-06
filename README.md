@@ -1,7 +1,7 @@
 # Samples
 
-Samples for LuaStudio v2.2.x:
-https://scormpool.com/luastudio
+Samples for LuaStudio v2.3.x:
+https://luastudio.github.io
 
 GitHub:
 https://github.com/luastudio/Samples

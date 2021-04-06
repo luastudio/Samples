@@ -34,6 +34,13 @@ function createWindow()
         0x303030, fps, nil )
 
     local s = window.stage
+    s.addEventListener(Events.Event.BEFORE_CLOSE, function(ev)
+		print("Before window close event ["..ev.target.window.title.."]. Use ev.stopPropagation() to prevent window from closing.")
+        --ev.stopPropagation()
+    end, false, 0, false)
+    s.addEventListener(Events.Event.CLOSE, function(ev)
+		print("Window close event ["..ev.target.window.title.."].")
+    end, false, 0, false)
 
     --s.name = name
     local shape = Sprite.new()
