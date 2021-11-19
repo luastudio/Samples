@@ -14,10 +14,17 @@ connection.request ([[CREATE TABLE IF NOT EXISTS Test (
     field3 BLOB 
 )]], nil);
 
-connection.request ("INSERT INTO Test (field1, field2) VALUES (?, ?)", {1, "test1"})
+connection.request ("INSERT INTO Test (field1, field2) VALUES (?, ?)", {1, "test1 utf8:?????"})
 connection.request ("INSERT INTO Test (field1, field2) VALUES (?, ?)", {2, "test2"})
 
 resultSet = connection.request ("SELECT field1, field2 FROM Test", nil)
+while resultSet.hasNext() do
+	row = resultSet.next()
+	print(row.field1.." "..row.field2)
+end
+
+--REGEXP
+resultSet = connection.request ("SELECT field1, field2 FROM Test WHERE field2 REGEXP '.*?????+'", nil)
 while resultSet.hasNext() do
 	row = resultSet.next()
 	print(row.field1.." "..row.field2)
@@ -96,6 +103,13 @@ resultSet = connection.request ([[select pi() as pi, floor(1.8) as floor, ceil(1
 while resultSet.hasNext() do
 	row = resultSet.next()
 	print('Math: pi(): '..row.pi..' floor(1.8): '..row.floor..' ceil(1.3): '..row.ceil..' sqrt(4): '..row.sqrt..' mod(7,2): '..row.mod)
+end
+
+--json
+resultSet = connection.request('SELECT json_object(\'ex\',\'[52,3.14159]\') jobject, json_array_length(\'[1,2,3,4]\') jlen, json_insert(\'[1,[2,3],4]\',\'$[1][#]\',99) jinsert', nil)
+while resultSet.hasNext() do
+	row = resultSet.next()
+    Lib.Sys.trace(row)
 end
 
 connection.close()
