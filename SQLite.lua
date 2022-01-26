@@ -1,4 +1,4 @@
--- SQLight.lua
+-- SQLite.lua
 
 connection = Lib.SQLight.Connection.new(":memory:")
 
@@ -14,7 +14,7 @@ connection.request ([[CREATE TABLE IF NOT EXISTS Test (
     field3 BLOB 
 )]], nil);
 
-connection.request ("INSERT INTO Test (field1, field2) VALUES (?, ?)", {1, "test1 utf8:?????"})
+connection.request ("INSERT INTO Test (field1, field2) VALUES (?, ?)", {1, "test1 utf8:ὕαλον"})
 connection.request ("INSERT INTO Test (field1, field2) VALUES (?, ?)", {2, "test2"})
 
 resultSet = connection.request ("SELECT field1, field2 FROM Test", nil)
@@ -24,7 +24,8 @@ while resultSet.hasNext() do
 end
 
 --REGEXP
-resultSet = connection.request ("SELECT field1, field2 FROM Test WHERE field2 REGEXP '.*?????+'", nil)
+--https://sqlite.org/src/file?name=ext/misc/regexp.c&ci=trunk
+resultSet = connection.request ("SELECT field1, field2 FROM Test WHERE field2 REGEXP '.*ὕαλον+'", nil)
 while resultSet.hasNext() do
 	row = resultSet.next()
 	print(row.field1.." "..row.field2)
@@ -107,6 +108,22 @@ end
 
 --json
 resultSet = connection.request('SELECT json_object(\'ex\',\'[52,3.14159]\') jobject, json_array_length(\'[1,2,3,4]\') jlen, json_insert(\'[1,[2,3],4]\',\'$[1][#]\',99) jinsert', nil)
+while resultSet.hasNext() do
+	row = resultSet.next()
+    Lib.Sys.trace(row)
+end
+
+--uuid
+--https://sqlite.org/src/file?name=ext/misc/uuid.c&ci=trunk
+resultSet = connection.request('SELECT uuid(), uuid_str(uuid()), uuid_blob(uuid())', nil)
+while resultSet.hasNext() do
+	row = resultSet.next()
+    Lib.Sys.trace(row)
+end
+
+--totype
+--https://sqlite.org/src/file?name=ext/misc/totype.c&ci=trunk
+resultSet = connection.request('SELECT tointeger("3"), toreal("7.2"), toreal("error")', nil)
 while resultSet.hasNext() do
 	row = resultSet.next()
     Lib.Sys.trace(row)
