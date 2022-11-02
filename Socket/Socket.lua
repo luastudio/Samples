@@ -3,13 +3,19 @@
 socket = Lib.Sys.SSL.Socket.new()
 --socket.verifyCert = true --by default not verified, or require setCA() method
 print(socket.verifyCert) --false, no verification
-print("Connecting to talk.google.com")
-socket.connect( Lib.Sys.Net.Host.new( "talk.google.com" ), 5223 )
+print("Connecting to ipinfo.io (more free APIs: https://apipheny.io/free-api/)")
+socket.connect( Lib.Sys.Net.Host.new( "ipinfo.io" ), 443 )
 print("Connected")
 
 print("Writing data")
-socket.write( '<?xml version="1.0" encoding="UTF-8"?><stream:stream xmlns:stream="http://etherx.jabber.org/streams" xmlns="jabber:client" to="talk.google.com" xml:lang="en" version="1.0">' );
-print( "Waiting for incoming XMPP stream ...." );
+socket.write( 'GET /161.185.160.93/geo HTTP/1.1'..'\r\n' )
+socket.write( 'Host: ipinfo.io'..'\r\n' )
+socket.write( 'User-Agent: LuaStudio socket example v1.0'..'\r\n' )
+
+socket.write( 'Connection: keep-alive'..'\r\n'..'\r\n' )
+
+print( "Waiting for incoming data ...." )
+
 bufSize = 32
 buf = Lib.Sys.IO.Bytes.alloc( 4096 )
 pos = 0
@@ -19,13 +25,15 @@ while true do
 	if( len < bufSize ) then break else pos = pos + len end
 end
 result = buf.toString()
-print( 'Recieved xmpp stream: '..result )
---Should be something like: <stream:stream from="talk.google.com" id="E0F18D0BDA98612A" version="1.0" xmlns:stream="http://etherx.jabber.org/streams" xmlns="jabber:client">
-socket.write( '</stream>' )
+lines = Lib.Str.split(result, '\n')
+print( 'Recieved data: ')
+for i=1,#lines,1 do
+print( Lib.Str.trim(lines[i]) )
+end
 
 cert = socket.peerCertificate()
 print(cert.commonName)
---Lib.Sys.trace(cert.altNames)
+Lib.Sys.trace(cert.altNames)
 Lib.Sys.trace(cert.notBefore)
 Lib.Sys.trace(cert.notAfter)
 

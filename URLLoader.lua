@@ -64,8 +64,13 @@ image_loader.contentLoaderInfo.addEventListener(Lib.Media.Events.IOErrorEvent.IO
             print("loading image error: "..event.text)
         end, false, 0, false)
 
-request = Net.URLRequest.new("https://picsum.photos/200/300/?random")
+request = Net.URLRequest.new("https://source.unsplash.com/random/200x300")
+
+--request = Net.URLRequest.new("https://picsum.photos/200/300/?random")
+--request.userAgent = "My custom user agent v1.0"
+
 request.contentType = "image/jpeg"
+
 image_loader.load(request, nil)
 image_loader.x = 15
 image_loader.y = 190

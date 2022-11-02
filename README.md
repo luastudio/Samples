@@ -1,6 +1,6 @@
 # Samples
 
-Samples for LuaStudio v2.7+:
+Samples for LuaStudio v2.8+:
 https://luastudio.github.io
 
 GitHub:
