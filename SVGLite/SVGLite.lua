@@ -26,6 +26,10 @@ function SVGLite.new()
     local ArcSegment = {}
     local pathParse --path parthing function
 
+    function self.parseProjectFile(path)
+		return self.parse(Lib.Project.getText(path))
+    end
+
     function self.parse(svgText)
         local res, xml = pcall(Xml.parse, svgText)
         if not res or xml == nil or xml.nodeType ~= XmlType.Document then

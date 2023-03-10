@@ -28,7 +28,7 @@ result = buf.toString()
 lines = Lib.Str.split(result, '\n')
 print( 'Recieved data: ')
 for i=1,#lines,1 do
-print( Lib.Str.trim(lines[i]) )
+    print( Lib.Str.trim(lines[i]) )
 end
 
 cert = socket.peerCertificate()
