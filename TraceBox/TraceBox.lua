@@ -2,7 +2,7 @@
 
 TraceBox = {}
 
-function TraceBox.new()
+function TraceBox.new(deque)
     local self = {}
 
 	local Sprite = Lib.Media.Display.Sprite
@@ -34,10 +34,13 @@ function TraceBox.new()
 	local messages = {} -- table of TextFields
 
 	local consoleSprite = Sprite.new()
+    local graphics = consoleSprite.graphics
 	local consoleLogSprite = Sprite.new()
 	consoleLogSprite.y = toPixels(9)
 	consoleSprite.addChild(consoleLogSprite)
     stage.addChild(consoleSprite)
+
+    local scrollRect = Lib.Media.Geom.Rectangle.new(0,0,0,0)
 
 	local textFormat = Text.TextFormat.new('_sans', toPixels(4), 0x000000, nil, nil, nil)
 
@@ -75,13 +78,13 @@ function TraceBox.new()
 	menuClear.mouseEnabled = true
 	menuClear.htmlText = "<b><a href='event:menuClear'>CLEAR</a></b>"
 	menuClear.addEventListener(Events.TextEvent.LINK, function(e)
-		while #messages > 0 do
+    	while #messages > 0 do
 		    local consoleLog = messages[1]
 			table.remove (messages, 1)
 	        if consoleLog.parent ~= nil then
 	        	consoleLog.parent.removeChild(consoleLog)
 	        end
-	        consoleLog.text = nil
+            consoleLog.text = nil
 	    end
 	    visibleMessaegIndex = -1
 	    consoleLogSize = 0
@@ -92,30 +95,30 @@ function TraceBox.new()
 	consoleSprite.addChild(menuClear)
 
     local drawConsole = function()
-		consoleSprite.graphics.clear()
+		graphics.clear()
 
-		consoleSprite.graphics.lineStyle(0, 0x000000, 0.0, false, nil, nil, nil, 3)
-	    consoleSprite.graphics.beginFill(0xDEDEDE, 0.8)
-	    consoleSprite.graphics.drawRect(0,0,consoleWidth, toPixels(9))
-	    consoleSprite.graphics.endFill()
-	    consoleSprite.graphics.beginFill(0xDEDEDE, 0.8)
-	    consoleSprite.graphics.drawRect(0,consoleHeight - toPixels(3),consoleWidth, toPixels(3))
-	    consoleSprite.graphics.endFill()
-	    consoleSprite.graphics.beginFill(0xFFFFFF, 0.7)
-	    consoleSprite.graphics.drawRect(0,toPixels(9),consoleWidth, consoleHeight - toPixels(9 + 3))
-	    consoleSprite.graphics.endFill()
+		graphics.lineStyle(0, 0x000000, 0.0, false, nil, nil, nil, 3)
+	    graphics.beginFill(0xDEDEDE, 0.8)
+	    graphics.drawRect(0,0,consoleWidth, toPixels(9))
+	    graphics.endFill()
+	    graphics.beginFill(0xDEDEDE, 0.8)
+	    graphics.drawRect(0,consoleHeight - toPixels(3),consoleWidth, toPixels(3))
+	    graphics.endFill()
+	    graphics.beginFill(0xFFFFFF, 0.7)
+	    graphics.drawRect(0,toPixels(9),consoleWidth, consoleHeight - toPixels(12))
+	    graphics.endFill()
 	    --border
-	    consoleSprite.graphics.lineStyle(2, 0x0000FF, 1.0, false, nil, nil, nil, 3)
-	    consoleSprite.graphics.drawRect(0, 0, consoleWidth, consoleHeight)
-	    consoleSprite.graphics.endFill()
+	    graphics.lineStyle(2, 0x0000FF, 1.0, false, nil, nil, nil, 3)
+	    graphics.drawRect(0, 0, consoleWidth, consoleHeight)
+	    graphics.endFill()
 	    --Resizer
-	    consoleSprite.graphics.moveTo(consoleWidth, consoleHeight - toPixels(3))
-	    consoleSprite.graphics.lineStyle(0, 0x0000FF, 1.0, false, nil, nil, nil, 3)
-	    consoleSprite.graphics.beginFill(0x0000FF, 1)
-	    consoleSprite.graphics.lineTo(consoleWidth - toPixels(3), consoleHeight)
-	    consoleSprite.graphics.lineTo(consoleWidth, consoleHeight)
-	    consoleSprite.graphics.lineTo(consoleWidth, consoleHeight - toPixels(3))
-	    consoleSprite.graphics.endFill()
+	    graphics.moveTo(consoleWidth, consoleHeight - toPixels(3))
+	    graphics.lineStyle(0, 0x0000FF, 1.0, false, nil, nil, nil, 3)
+	    graphics.beginFill(0x0000FF, 1)
+	    graphics.lineTo(consoleWidth - toPixels(3), consoleHeight)
+	    graphics.lineTo(consoleWidth, consoleHeight)
+	    graphics.lineTo(consoleWidth, consoleHeight - toPixels(3))
+	    graphics.endFill()
 	end
 
 	local scrollConsoleLog = function (deltaY)
@@ -128,7 +131,7 @@ function TraceBox.new()
 	    end
 
 	    local logH = messages[visibleMessaegIndex+1].y + deltaY
-	    local logHeight = consoleHeight - toPixels(9 + 3)
+	    local logHeight = consoleHeight - toPixels(12)
 	    for j = visibleMessaegIndex, #messages-1, 1 do
 			local consoleLog = messages[j+1]
 	        consoleLog.width = consoleWidth
@@ -179,7 +182,9 @@ function TraceBox.new()
 	end
 
 	local processResize = function()
-		consoleLogSprite.scrollRect = Lib.Media.Geom.Rectangle.new(0,0,consoleWidth,consoleHeight-toPixels(9 + 3))
+        scrollRect.width = consoleWidth
+        scrollRect.height = consoleHeight-toPixels(12)
+		consoleLogSprite.scrollRect = scrollRect
 		drawConsole()
 		txtCounter.x = consoleWidth - txtCounter.textWidth - toPixels(2)
 		scrollConsoleLog(0)
@@ -198,7 +203,7 @@ function TraceBox.new()
 	    consoleSprite.x = screenWidth / 10
 
 	    consoleWidth = screenWidth - screenWidth / 5
-	    consoleHeight = math.max(screenHeight / 5, toPixels(9 + 3 + 7))
+	    consoleHeight = math.max(screenHeight / 5, toPixels(19))
 
 		--preferable
 	    if preferableX ~= nil then
@@ -295,7 +300,7 @@ function TraceBox.new()
 		                consoleWidth - deltaX or consoleWidth
 	                preferableWidth = consoleWidth
 	            end
-	            if consoleHeight + deltaY > toPixels(9 + 3) then
+	            if consoleHeight + deltaY > toPixels(12) then
 	            	consoleHeight = consoleHeight + deltaY
 	                consoleHeight = (consoleHeight > screenHeight) and
 		                consoleHeight - (consoleHeight - screenHeight) or consoleHeight
@@ -332,7 +337,7 @@ function TraceBox.new()
 		    return
 		end
 
-		local msg = Thread.readMessage(false)
+		local msg = (deque ~= nil) and deque.pop(false) or Thread.readMessage(false)
 
 	    if msg == nil or msg.message == nil then
 		    return
@@ -349,7 +354,7 @@ function TraceBox.new()
 	    consoleLog.multiline = true
 	    consoleLog.width = consoleWidth
 	    consoleLog.mouseEnabled = false
-	    consoleLog.height = consoleHeight - toPixels(9 + 3)
+	    consoleLog.height = consoleHeight - toPixels(12)
         if msg.type == 1 then
 		    consoleLog.text = message
         elseif msg.type == 2 then
@@ -371,7 +376,7 @@ function TraceBox.new()
 		        consoleLogSprite.removeChildAt(0)
 	        end
 	        --add
-	        local logY = consoleHeight - toPixels(9 + 3)
+	        local logY = consoleHeight - toPixels(12)
 	        local i = #messages - 1
 	        while i >= 0 do
 		        consoleLog = messages[i+1]
