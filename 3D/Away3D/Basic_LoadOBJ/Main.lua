@@ -91,7 +91,6 @@ svg = SVGLite.new()
 local dom = svg.parseProjectFile("/SVGLite/coffee_187455.svg")
 
 sprite = Display.Sprite.new()
-sprite.cacheAsBitmap = true
 scale = 256 / dom.viewBox.width
 svg.render(dom, sprite.graphics, Lib.Media.Geom.Matrix.new(scale,0,0,scale,0,0))
 
@@ -108,6 +107,7 @@ switch = Switch.new("from SVG", 0xFFFF00, 100, 50, false, function(status)
     else
 		_model.material = _material
     end
+    _view.render()
 end)
 local switchSprite = switch.getSprite()
 switchSprite.x = 10

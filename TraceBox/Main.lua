@@ -63,6 +63,6 @@ function safeWrap()
     error("test error")
 end
 local status, res = xpcall(safeWrap, debug.traceback)
-if not status then
-     trace(res)
-end
+--if not status then
+--     trace(res)
+--end
